@@ -2,7 +2,6 @@
 import pandas as pd
 from urllib.request import urlopen
 import json
-import numpy as np
 
 state_abbrev = {
     'Alabama': 'AL',
@@ -57,12 +56,6 @@ state_abbrev = {
     'Wyoming': 'WY'
 }
 
-RED = 0xFF0000
-ORANGE = 0xFFA500
-YELLOW = 0xFFFF00
-LIGHT_BLUE = 0xADD8E6
-GRAY = 0xD3D3D3
-
 
 def get_state_pop():
     state_pop = pd.DataFrame(pd.read_json('https://api.census.gov/data/2019/pep/population?get=NAME,POP&for=state:*'))
@@ -113,10 +106,4 @@ curr_usdata['population'] = curr_statesdata['population'].sum()
 
 curr_statesdata['rel_positive'] = curr_statesdata['positive'] / curr_usdata['positive']
 curr_statesdata['rel_population'] = curr_statesdata['population'] / curr_usdata['population']
-curr_statesdata['value'] = curr_statesdata['rel_positive'] / curr_statesdata['rel_population']
-
-curr_statesdata['color'] = np.where(curr_statesdata['value'] > 2, 'RED',
-                           np.where(curr_statesdata['value'] > 1.5, 'ORANGE',
-                           np.where(curr_statesdata['value'] > 1.25, 'YELLOW',
-                           np.where(curr_statesdata['value'] > 0.75, 'GRAY',
-                           'LIGHT_BLUE'))))
+curr_statesdata['value'] = 100.00 * (curr_statesdata['positive'] / curr_statesdata['population'])
